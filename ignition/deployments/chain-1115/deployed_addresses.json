@@ -1,3 +1,5 @@
 {
-  "HelloWorldModule#HelloWorld": "0xD7c4238851a39F0cc7b8C35bcD813339E37447Be"
+  "HelloWorldModule#HelloWorld": "0xD7c4238851a39F0cc7b8C35bcD813339E37447Be",
+  "LoanDAppBasicModule#CoreLoanPlatform": "0x5300a4e3E96EAe9A3d8Bb2ac521e2F37851f3FeC",
+  "CoreLoanPlatform#CoreLoanPlatform": "0x0d2e48ea6e0a8ed6BEe6be65381571afA0bD30Ad"
 }
