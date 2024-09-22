@@ -117,29 +117,54 @@ contract CoreLoanPlatform is Ownable {
 
     function repayLoan(address user) external  {
       // TODO : Implement Logic for repaying Loan
+      Loan storage loan = loans[user];
+	    require(loan.active, "No active loan");
+	    uint256 daysElapsed = (block.timestamp - loan.timestamp) / SECONDS_IN_A_DAY;
+	    require(daysElapsed <= 30, "Loan duration exceeded 30 days");
+	    uint256 interest = (loan.amount * INTEREST_RATE * daysElapsed) / 36500;
+	    uint256 totalRepayment = loan.amount + interest;
+	    BTC.safeTransferFrom(user, address(this), totalRepayment);
+	    loan.active = false;
+	    totalBorrowed = totalBorrowed - loan.amount;
+	    emit LoanRepaid(msg.sender, loan.amount, interest);
     }
 
     function calculateInterest(address user) external view returns (uint256) {
       // TODO : Implement Logic for calculating interest
+      Loan storage loan = loans[user];
+	    if (loan.active) {
+		      uint256 daysElapsed = (block.timestamp - loan.timestamp) / SECONDS_IN_A_DAY;
+		      uint256 interest = (loan.amount * INTEREST_RATE * daysElapsed) / 36500;
+		      return interest;
+	    }
     }
 
     function getLoanDetails(address borrower) external view returns (Loan memory) {
       // TODO : Implement Logic for fetching loan of specific borrower
+      return loans[borrower];
     }
 
     function getLenderBalance(address lender) external view returns (uint256) {
       // TODO : Implement Logic for getting the Lender balance
+      return lenderBalances[lender];
     }
 
     function getTotalStaked() external view returns (uint256) {
       // TODO : Implement Logic for fetching total staked amount
+      return totalStaked;
     }
 
     function getTotalBorrowed() external view returns (uint256) {
       // TODO : Implement Logic for fetching total borrowed amount
+      return totalBorrowed;
     }
 
     function getUserBorrowed(address user) external view returns (uint256) {
       // TODO : Implement Logic for fetching a User's borrowed amount
+      Loan storage loan = loans[user];
+      if (loan.active) {
+          return loan.amount;
+      }
+      return 0;
     }
 }
